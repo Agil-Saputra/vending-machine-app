@@ -1,7 +1,7 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+import { Product, Transaction } from "../types";
 
 export const api = {
-  // Products
   async getProducts() {
     const res = await fetch(`${API_BASE_URL}/products`, { cache: 'no-store' });
     if (!res.ok) throw new Error('Failed to fetch products');
@@ -14,7 +14,7 @@ export const api = {
     return res.json();
   },
 
-  async createProduct(product: any) {
+  async createProduct(product: Product) {
     const res = await fetch(`${API_BASE_URL}/products`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -24,7 +24,7 @@ export const api = {
     return res.json();
   },
 
-  async updateProduct(id: number, product: any) {
+  async updateProduct(id: number, product: Product) {
     const res = await fetch(`${API_BASE_URL}/products/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -52,14 +52,14 @@ export const api = {
     return res.json();
   },
 
-  // Transactions
+
   async getTransactions() {
     const res = await fetch(`${API_BASE_URL}/transactions`, { cache: 'no-store' });
     if (!res.ok) throw new Error('Failed to fetch transactions');
     return res.json();
   },
 
-  async createTransaction(transaction: any) {
+  async createTransaction(transaction: Transaction) {
     const res = await fetch(`${API_BASE_URL}/transactions`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

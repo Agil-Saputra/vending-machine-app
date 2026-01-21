@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { productSchema } from '../lib/validation';
@@ -11,6 +11,7 @@ export default function AdminPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [message, setMessage] = useState('');
+  const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3001";
 
   const {
     register,
@@ -22,13 +23,9 @@ export default function AdminPage() {
     resolver: yupResolver(productSchema),
   });
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  const fetchProducts = async () => {
+   const fetchProducts = async () => {
     try {
-      const res = await fetch('http://localhost:3001/products');
+      const res = await fetch(`${BASE_URL}/products`);
       const data = await res.json();
       setProducts(data);
     } catch (error) {
@@ -36,11 +33,14 @@ export default function AdminPage() {
     }
   };
 
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
   const onSubmit = async (data: ProductFormData) => {
     try {
       if (editingId) {
-        // Update
-        await fetch(`http://localhost:3001/products/${editingId}`, {
+        await fetch(`${BASE_URL}/products/${editingId}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ id: editingId, ...data }),
@@ -48,8 +48,7 @@ export default function AdminPage() {
         setMessage('Produk berhasil diperbarui!');
         setEditingId(null);
       } else {
-        // Create
-        await fetch('http://localhost:3001/products', {
+        await fetch(`${BASE_URL}/products`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data),
@@ -76,7 +75,7 @@ export default function AdminPage() {
     if (!confirm('Yakin ingin menghapus produk ini?')) return;
 
     try {
-      await fetch(`http://localhost:3001/products/${id}`, {
+      await fetch(`${BASE_URL}/products/${id}`, {
         method: 'DELETE',
       });
       setMessage('Produk berhasil dihapus!');
@@ -93,6 +92,7 @@ export default function AdminPage() {
 
   return (
       <div className="max-w-6xl mx-auto px-4 py-8">
+
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
@@ -101,7 +101,7 @@ export default function AdminPage() {
               href="/"
               className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
             >
-              ← Kembali ke Vending Machine
+               Kembali
             </Link>
           </div>
           <p className="text-gray-600 mt-2">Kelola produk vending machine</p>
@@ -113,11 +113,11 @@ export default function AdminPage() {
           </div>
         )}
 
-        <div className="grid md:grid-cols-2 gap-8 border-10 border-gray-600 rounded-2xl">
+        <div className="grid md:grid-cols-2 gap-8 max-w-6xl border-10 border-gray-500 rounded-2xl p-4">
           {/* Form Section */}
           <div className="bg-white rounded-2xl shadow-xl p-6">
             <h2 className="text-2xl font-bold mb-6 text-gray-800">
-              {editingId ? 'Edit Produk' : 'Tambah Produk'}
+              {editingId ? ' Edit Produk' : ' Tambah Produk'}
             </h2>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div>
@@ -219,7 +219,7 @@ export default function AdminPage() {
 
           {/* Products List */}
           <div className="bg-white rounded-2xl shadow-xl p-6">
-            <h2 className="text-2xl font-bold mb-6 text-gray-800">📦 Daftar Produk</h2>
+            <h2 className="text-2xl font-bold mb-6 text-gray-800">Daftar Produk</h2>
             <div className="space-y-4 max-h-[600px] overflow-y-auto">
               {products.length === 0 ? (
                 <p className="text-gray-500 text-center py-8">Belum ada produk</p>

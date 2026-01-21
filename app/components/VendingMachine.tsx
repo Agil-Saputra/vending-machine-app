@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Product, Transaction } from "../types";
+import { Product } from "../types";
+import Image from "next/image";
 
 const MONEY_OPTIONS = [2000, 5000, 10000, 20000, 50000];
 
@@ -18,24 +19,19 @@ export default function VendingMachine() {
   const [showMoneyModal, setShowMoneyModal] = useState(false);
   const [pendingMoney, setPendingMoney] = useState(0);
   const [addingMoney, setAddingMoney] = useState(false);
+  const [showReturnModal, setShowReturnModal] = useState(false);
+  const [processingPayment, setProcessingPayment] = useState(false);
+  const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3001";
 
   useEffect(() => {
-    fetchProducts();
+    fetch(`${BASE_URL}/products`)
+      .then(res => res.json())
+      .then(data => setProducts(data))
+      .catch(() => setError("Gagal memuat produk"))
+      .finally(() => setLoading(false));
   }, []);
 
-  const fetchProducts = async () => {
-    try {
-      const res = await fetch("http://localhost:3001/products");
-      const data = await res.json();
-      setProducts(data);
-    } catch (error) {
-      setError("Gagal memuat produk");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSelectProduct = (product: Product) => {
+  const selectProduct = (product: Product) => {
     if (product.stock === 0) {
       setError("Maaf, produk ini stok habis!");
       return;
@@ -44,24 +40,17 @@ export default function VendingMachine() {
     setError("");
   };
 
-  const handleNext = () => {
-    if (step === 1 && selectedProduct) {
-      setStep(2);
-    }
-  };
+  const goToPayment = () => step === 1 && selectedProduct && setStep(2);
 
-  const insertMoney = (amount: number) => {
+  const openMoneyModal = (amount: number) => {
     setPendingMoney(amount);
     setShowMoneyModal(true);
   };
 
   const confirmAddMoney = async () => {
     setAddingMoney(true);
-
-    // Simulate money insertion with animation delay
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    setMoneyInserted((prev) => prev + pendingMoney);
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    setMoneyInserted(prev => prev + pendingMoney);
     setAddingMoney(false);
     setShowMoneyModal(false);
     setPendingMoney(0);
@@ -73,70 +62,72 @@ export default function VendingMachine() {
     setPendingMoney(0);
   };
 
-  const handleConfirmPayment = async () => {
-    if (!selectedProduct) return;
-
-    if (moneyInserted < selectedProduct.price) {
-      setError(
-        `Uang tidak cukup! Kurang Rp${(selectedProduct.price - moneyInserted).toLocaleString("id-ID")}`,
-      );
+  const confirmPayment = async () => {
+    if (!selectedProduct || moneyInserted < selectedProduct.price) {
+      setError(`Uang tidak cukup! Kurang Rp${(selectedProduct!.price - moneyInserted).toLocaleString("id-ID")}`);
       return;
     }
 
-    const calculatedChange = moneyInserted - selectedProduct.price;
-    setChange(calculatedChange);
+    setChange(moneyInserted - selectedProduct.price);
+    setProcessingPayment(true);
 
     try {
-      // Update stock
-      await fetch(`http://localhost:3001/products/${selectedProduct.id}`, {
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      await fetch(`${BASE_URL}/products/${selectedProduct.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ stock: selectedProduct.stock - 1 }),
       });
 
-      // Create transaction
-      const transaction: Omit<Transaction, "id"> = {
-        productId: selectedProduct.id,
-        productName: selectedProduct.name,
-        price: selectedProduct.price,
-        moneyInserted,
-        change: calculatedChange,
-        timestamp: new Date().toISOString(),
-      };
+      setProducts(prev => prev.map(p => p.id === selectedProduct.id ? { ...p, stock: p.stock - 1 } : p));
+      setSelectedProduct({ ...selectedProduct, stock: selectedProduct.stock - 1 });
 
-      await fetch("http://localhost:3001/transactions", {
+      await fetch(`${BASE_URL}/transactions`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(transaction),
+        body: JSON.stringify({
+          productId: selectedProduct.id,
+          productName: selectedProduct.name,
+          price: selectedProduct.price,
+          moneyInserted,
+          change: moneyInserted - selectedProduct.price,
+          timestamp: new Date().toISOString(),
+        }),
       });
 
       setStep(3);
       setError("");
-    } catch (error) {
+    } catch {
       setError("Gagal melakukan pembelian");
+    } finally {
+      setProcessingPayment(false);
     }
   };
 
-  const handleReset = () => {
+  const reset = () => {
     setStep(1);
     setSelectedProduct(null);
     setMoneyInserted(0);
     setChange(0);
     setError("");
-    fetchProducts();
   };
 
-  const handleBack = () => {
-    if (step === 2) {
-      setStep(1);
-      setMoneyInserted(0);
-      setError("");
-    }
+  const goBack = () => {
+    setStep(1);
+    setMoneyInserted(0);
+    setError("");
   };
 
-  const formatPrice = (price: number) => {
-    return `Rp${price.toLocaleString("id-ID")}`;
+  const openReturnModal = () => moneyInserted > 0 && setShowReturnModal(true);
+
+  const confirmReturn = () => {
+    setMoneyInserted(0);
+    setError("");
+    setShowReturnModal(false);
   };
+
+  const formatPrice = (price: number) => `Rp${price.toLocaleString("id-ID")}`;
 
   if (loading) {
     return (
@@ -217,7 +208,7 @@ export default function VendingMachine() {
               {products.map((product) => (
                 <div
                   key={product.id}
-                  onClick={() => handleSelectProduct(product)}
+                  onClick={() => selectProduct(product)}
                   className={`border-2 relative rounded-xl p-4 cursor-pointer transition-all ${
                     product.stock === 0
                       ? "border-gray-300 bg-gray-50 opacity-50 cursor-not-allowed"
@@ -226,7 +217,7 @@ export default function VendingMachine() {
                         : "border-gray-200 hover:border-indigo-400 hover:shadow-md"
                   }`}
                 >
-                  <img src={product.image} alt={product.name} className="object-contain w-full rounded-lg h-40" />
+                  <Image width={120} height={120} src={product.image} alt={product.name} className="object-contain w-full rounded-lg h-40" />
                   <h3 className="font-bold text-lg mb-1 text-center">
                     {product.name}
                   </h3>
@@ -252,7 +243,7 @@ export default function VendingMachine() {
 
           {selectedProduct && (
               <button
-                onClick={handleNext}
+                onClick={goToPayment}
                 className="w-full py-3 px-4 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition"
               >
                 Lanjut ke Pembayaran →
@@ -263,7 +254,7 @@ export default function VendingMachine() {
 
       {/* Step 2 */}
       {step === 2 && selectedProduct && (
-        <div className="max-w-6xl mx-auto border-10 border-gray-600 rounded-2xl">
+        <div className="max-w-6xl mx-auto border-10 border-gray-600 rounded-2xl p-4">
           <div className="grid md:grid-cols-2 gap-6">
             {/* Product Summary */}
             <div className="bg-white rounded-2xl shadow-xl p-6">
@@ -271,7 +262,7 @@ export default function VendingMachine() {
                 Detail Pembelian
               </h3>
               <div className="text-center mb-4">
-                  <img src={selectedProduct.image} alt={selectedProduct.name} className="object-contain w-full rounded-lg h-40" />
+                  <Image width={120} height={120} src={selectedProduct.image} alt={selectedProduct.name} className="object-contain w-full rounded-lg h-40" />
                
                 <p className="font-bold text-xl mb-2">{selectedProduct.name}</p>
                 <p className="text-indigo-600 font-bold text-2xl">
@@ -315,11 +306,11 @@ export default function VendingMachine() {
                 </p>
               </div>
 
-              <div className="space-y-2 mb-4">
+              <div className="space-y-2 mb-8">
                 {MONEY_OPTIONS.map((amount) => (
                   <button
                     key={amount}
-                    onClick={() => insertMoney(amount)}
+                    onClick={() => openMoneyModal(amount)}
                     className="w-full py-3 px-4 bg-indigo-400 text-white rounded-lg font-semibold hover:bg-indigo-700 transition transform hover:scale-105"
                   >
                     + {formatPrice(amount)}
@@ -329,23 +320,41 @@ export default function VendingMachine() {
 
               <div className="space-y-2">
                 <button
-                  onClick={handleConfirmPayment}
-                  disabled={moneyInserted < selectedProduct.price}
+                  onClick={confirmPayment}
+                  disabled={moneyInserted < selectedProduct.price || processingPayment}
                   className={`w-full py-3 px-4 rounded-lg font-semibold transition ${
-                    moneyInserted < selectedProduct.price
+                    moneyInserted < selectedProduct.price || processingPayment
                       ? "bg-gray-300 cursor-not-allowed"
                       : "bg-indigo-600 text-white hover:bg-indigo-700"
                   }`}
                 >
-                  {moneyInserted < selectedProduct.price
-                    ? `Kurang ${formatPrice(selectedProduct.price - moneyInserted)}`
-                    : "Konfirmasi Pembayaran ✓"}
+                  {processingPayment ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <span>Memproses Pembayaran...</span>
+                    </div>
+                  ) : moneyInserted < selectedProduct.price ? (
+                    `Kurang ${formatPrice(selectedProduct.price - moneyInserted)}`
+                  ) : (
+                    "Konfirmasi Pembayaran"
+                  )}
                 </button>
                 <button
-                  onClick={handleBack}
+                  onClick={openReturnModal}
+                  disabled={moneyInserted === 0 || processingPayment}
+                  className={`w-full py-3 px-4 rounded-lg font-semibold transition ${
+                    moneyInserted === 0 || processingPayment
+                      ? "bg-gray-300 cursor-not-allowed"
+                      : "bg-red-500 text-white hover:bg-red-600"
+                  }`}
+                >
+                  Kembalikan Uang
+                </button>
+                <button
+                  onClick={goBack}
                   className="w-full py-3 px-4 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 transition"
                 >
-                  ← Kembali
+                  Kembali
                 </button>
               </div>
             </div>
@@ -363,7 +372,7 @@ export default function VendingMachine() {
             </h2>
 
             <div className="bg-gray-50 rounded-xl p-6 mb-6">
-              <img src={selectedProduct.image} alt={selectedProduct.name} className="object-contain w-full rounded-lg h-40" />
+              <Image width={120} height={120} src={selectedProduct.image} alt={selectedProduct.name} className="object-contain w-full rounded-lg h-40" />
 
               <p className="font-bold text-xl mb-4">{selectedProduct.name}</p>
 
@@ -396,7 +405,7 @@ export default function VendingMachine() {
                 Lihat History Pembelian
               </a>
               <button
-                onClick={handleReset}
+                onClick={reset}
                 className="w-full py-3 px-4 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 transition"
               >
                 Selesai - Kembali ke Beranda
@@ -459,6 +468,44 @@ export default function VendingMachine() {
                 </button>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Return Money Confirmation Modal */}
+      {showReturnModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl p-6 max-w-md w-full transform transition-all">
+            <div className="text-center mb-6">
+              <h3 className="text-2xl font-bold text-gray-800 mb-2">
+                Konfirmasi Pengembalian Uang
+              </h3>
+              <p className="text-gray-600">
+                Apakah Anda yakin ingin mengembalikan semua uang?
+              </p>
+            </div>
+
+            <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-4 mb-6">
+              <p className="text-sm text-gray-600 mb-1">Total Uang yang Akan Dikembalikan</p>
+              <p className="text-3xl font-bold text-red-700">
+                {formatPrice(moneyInserted)}
+              </p>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowReturnModal(false)}
+                className="flex-1 py-3 px-4 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 transition"
+              >
+                Batal
+              </button>
+              <button
+                onClick={confirmReturn}
+                className="flex-1 py-3 px-4 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition"
+              >
+                Ya, Kembalikan
+              </button>
+            </div>
           </div>
         </div>
       )}

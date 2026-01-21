@@ -1,4 +1,46 @@
-# Installation Guide - Vending Machine App
+# Vending Machine App 
+App for mana
+
+#### 1. Vending Machine Display
+- ✅ Shows 5 food/drink items
+- ✅ Each item displays: Image, Name, Price, Stock
+- ✅ Visual representation with emojis
+- ✅ Responsive product grid
+
+#### 2. Money Input Simulation
+- ✅ 5 denominations: Rp2.000, Rp5.000, Rp10.000, Rp20.000, Rp50.000
+- ✅ Real-time total display
+- ✅ Return money button
+
+#### 3. Product Purchase
+- ✅ Click "Beli" button to purchase
+- ✅ Validates insufficient money
+- ✅ Validates out of stock
+- ✅ Reduces stock after purchase
+- ✅ Displays change amount
+- ✅ Success confirmation
+
+#### 4. Admin Panel
+- ✅ Route: `/admin`
+- ✅ **CRUD Operations**:
+  - ✅ Create (Add new product)
+  - ✅ Read (List all products)
+  - ✅ Update (Edit product)
+  - ✅ Delete (Remove product)
+- ✅ Form validation with react-hook-form + yup
+
+#### 5. Transaction History
+- ✅ Route: `/history`
+- ✅ All purchases saved to json-server
+- ✅ Display transaction list
+- ✅ Shows: Product, Price, Money, Change, Time
+
+
+# Screenshots
+
+
+
+# Installation Guide
 
 ## Prerequisites
 
@@ -34,7 +76,7 @@ npm run dev
 ```
 
 
-## 🌐 Accessing the Application
+## Accessing the Application
 
 | URL | Description |
 |-----|-------------|

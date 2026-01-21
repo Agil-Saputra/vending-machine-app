@@ -44,9 +44,6 @@ export default function HistoryPage() {
     return `Rp${price.toLocaleString('id-ID')}`;
   };
 
-  const totalRevenue = transactions.reduce((sum, t) => sum + t.price, 0);
-  const totalTransactions = transactions.length;
-
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -65,7 +62,7 @@ export default function HistoryPage() {
               href="/"
               className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
             >
-              ← Kembali ke Vending Machine
+              Kembali
             </Link>
           </div>
           <p className="text-gray-600 mt-2">Semua transaksi pembelian</p>

@@ -1,7 +1,7 @@
 {
   "products": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Coca Cola",
       "price": 8000,
       "stock": 10,
@@ -9,15 +9,15 @@
       "category": "minuman"
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Chitato",
       "price": 10000,
-      "stock": 8,
+      "stock": 6,
       "image": "/products/chitato.png",
       "category": "makanan"
     },
     {
-      "id": 3,
+      "id": "3",
       "name": "Aqua",
       "price": 5000,
       "stock": 15,
@@ -25,7 +25,7 @@
       "category": "minuman"
     },
     {
-      "id": 4,
+      "id": "4",
       "name": "Oreo",
       "price": 12000,
       "stock": 6,
@@ -33,10 +33,10 @@
       "category": "makanan"
     },
     {
-      "id": 5,
+      "id": "5",
       "name": "Teh Botol",
       "price": 7000,
-      "stock": 12,
+      "stock": 11,
       "image": "/products/teh-botol.png",
       "category": "minuman"
     }
@@ -122,6 +122,204 @@
       "moneyInserted": 20000,
       "change": 15000,
       "timestamp": "2026-01-20T19:16:15.030Z"
+    },
+    {
+      "id": "63c0",
+      "productId": 3,
+      "productName": "Aqua",
+      "price": 5000,
+      "moneyInserted": 50000,
+      "change": 45000,
+      "timestamp": "2026-01-20T19:29:06.988Z"
+    },
+    {
+      "id": "d2a9",
+      "productId": 4,
+      "productName": "Oreo",
+      "price": 12000,
+      "moneyInserted": 12000,
+      "change": 0,
+      "timestamp": "2026-01-21T03:37:11.554Z"
+    },
+    {
+      "id": "97fd",
+      "productId": 2,
+      "productName": "Chitato",
+      "price": 10000,
+      "moneyInserted": 10000,
+      "change": 0,
+      "timestamp": "2026-01-21T03:39:10.881Z"
+    },
+    {
+      "id": "6242",
+      "productId": 5,
+      "productName": "Teh Botol",
+      "price": 7000,
+      "moneyInserted": 50000,
+      "change": 43000,
+      "timestamp": "2026-01-21T03:39:19.378Z"
+    },
+    {
+      "id": "5aa3",
+      "productId": 5,
+      "productName": "Teh Botol",
+      "price": 7000,
+      "moneyInserted": 20000,
+      "change": 13000,
+      "timestamp": "2026-01-21T03:52:52.505Z"
+    },
+    {
+      "id": "6a8d",
+      "productId": 2,
+      "productName": "Chitato",
+      "price": 10000,
+      "moneyInserted": 20000,
+      "change": 10000,
+      "timestamp": "2026-01-21T03:57:23.177Z"
+    },
+    {
+      "id": "cfa7",
+      "productId": 2,
+      "productName": "Chitato",
+      "price": 10000,
+      "moneyInserted": 10000,
+      "change": 0,
+      "timestamp": "2026-01-21T03:59:46.922Z"
+    },
+    {
+      "id": "109a",
+      "productId": 2,
+      "productName": "Chitato",
+      "price": 10000,
+      "moneyInserted": 10000,
+      "change": 0,
+      "timestamp": "2026-01-21T03:59:55.830Z"
+    },
+    {
+      "id": "002a",
+      "productId": 2,
+      "productName": "Chitato",
+      "price": 10000,
+      "moneyInserted": 10000,
+      "change": 0,
+      "timestamp": "2026-01-21T04:01:14.806Z"
+    },
+    {
+      "id": "1158",
+      "productId": 2,
+      "productName": "Chitato",
+      "price": 10000,
+      "moneyInserted": 20000,
+      "change": 10000,
+      "timestamp": "2026-01-21T04:01:24.346Z"
+    },
+    {
+      "id": "d657",
+      "productId": 2,
+      "productName": "Chitato",
+      "price": 10000,
+      "moneyInserted": 10000,
+      "change": 0,
+      "timestamp": "2026-01-21T04:02:43.234Z"
+    },
+    {
+      "id": "9705",
+      "productId": 5,
+      "productName": "Teh Botol",
+      "price": 7000,
+      "moneyInserted": 20000,
+      "change": 13000,
+      "timestamp": "2026-01-21T04:37:57.064Z"
+    },
+    {
+      "id": "8526",
+      "productId": 5,
+      "productName": "Teh Botol",
+      "price": 7000,
+      "moneyInserted": 10000,
+      "change": 3000,
+      "timestamp": "2026-01-21T04:38:48.093Z"
+    },
+    {
+      "id": "f63c",
+      "productId": 2,
+      "productName": "Chitato",
+      "price": 10000,
+      "moneyInserted": 10000,
+      "change": 0,
+      "timestamp": "2026-01-21T04:44:44.393Z"
+    },
+    {
+      "id": "6fbe",
+      "productId": 2,
+      "productName": "Chitato",
+      "price": 10000,
+      "moneyInserted": 20000,
+      "change": 10000,
+      "timestamp": "2026-01-21T04:51:58.301Z"
+    },
+    {
+      "id": "dea4",
+      "productId": 2,
+      "productName": "Chitato",
+      "price": 10000,
+      "moneyInserted": 10000,
+      "change": 0,
+      "timestamp": "2026-01-21T04:52:52.569Z"
+    },
+    {
+      "id": "8872",
+      "productId": 4,
+      "productName": "Oreo",
+      "price": 12000,
+      "moneyInserted": 15000,
+      "change": 3000,
+      "timestamp": "2026-01-21T04:55:30.410Z"
+    },
+    {
+      "id": "b16c",
+      "productId": 2,
+      "productName": "Chitato",
+      "price": 10000,
+      "moneyInserted": 55000,
+      "change": 45000,
+      "timestamp": "2026-01-21T04:58:33.505Z"
+    },
+    {
+      "id": "68d9",
+      "productId": 1,
+      "productName": "Coca Cola",
+      "price": 8000,
+      "moneyInserted": 20000,
+      "change": 12000,
+      "timestamp": "2026-01-21T05:01:12.794Z"
+    },
+    {
+      "id": "5f43",
+      "productId": 2,
+      "productName": "Chitato",
+      "price": 10000,
+      "moneyInserted": 10000,
+      "change": 0,
+      "timestamp": "2026-01-21T05:03:16.373Z"
+    },
+    {
+      "id": "b7ec",
+      "productId": "2",
+      "productName": "Chitato",
+      "price": 10000,
+      "moneyInserted": 20000,
+      "change": 10000,
+      "timestamp": "2026-01-21T05:14:40.614Z"
+    },
+    {
+      "id": "844d",
+      "productId": "5",
+      "productName": "Teh Botol",
+      "price": 7000,
+      "moneyInserted": 50000,
+      "change": 43000,
+      "timestamp": "2026-01-21T05:31:59.068Z"
     }
   ]
 }
