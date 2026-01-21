@@ -1,5 +1,4 @@
 # Vending Machine App 
-App for mana
 
 #### 1. Vending Machine Display
 - ✅ Shows 5 food/drink items
@@ -36,11 +35,13 @@ App for mana
 - ✅ Shows: Product, Price, Money, Change, Time
 
 
-# Screenshots
-
-
-
 # Installation Guide
+![Admin Page](public/screenshots/admin.png)
+![Vending Machine](public/screenshots/step-1.png)
+![Payment Step](public/screenshots/step-2.png)
+![Deposit Confirmation](public/screenshots/confirmation-1.png)
+![Withdrawal Confirmation](public/screenshots/confirmation-1.png)
+![Successful Purchase](public/screenshots/step-3.png)
 
 ## Prerequisites
 
