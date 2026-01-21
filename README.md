@@ -34,14 +34,16 @@
 - ✅ Display transaction list
 - ✅ Shows: Product, Price, Money, Change, Time
 
-
-# Installation Guide
+# Screenshots
 ![Admin Page](public/screenshots/admin.png)
 ![Vending Machine](public/screenshots/step-1.png)
 ![Payment Step](public/screenshots/step-2.png)
 ![Deposit Confirmation](public/screenshots/confirmation-1.png)
 ![Withdrawal Confirmation](public/screenshots/confirmation-1.png)
 ![Successful Purchase](public/screenshots/step-3.png)
+
+
+# Installation Guide
 
 ## Prerequisites
 
